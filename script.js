@@ -179,7 +179,9 @@ let addItems = (data) => {
                 }
                 handleInput();
             }else if(e.target.id === "nextPageBtn"){
-                page++;
+                if(page < data.total_pages){
+                    page++;
+                }
                 handleInput();
             }
         });
