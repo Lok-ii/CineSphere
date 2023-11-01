@@ -93,13 +93,20 @@ let addTrendingItems = (data) => {
 // ========== Add Other Sections to Home page=========== //
 
 let i = 0;
+let j = 0;
+let page = 1;
 let addItems = (data) => {
     let newMovieSection = document.createElement("section");
     newMovieSection.classList.add("popular");
     let newMovieScroll = document.createElement("div");
     newMovieScroll.classList.add("movie-scroll-small");
     let newHeading = document.createElement("h1");
-    newHeading.innerText = typeArray[i++ % 3];
+    
+    if(j > 0){
+        newHeading.innerText = "Search Results";
+    }else{
+        newHeading.innerText = typeArray[i++ % 3];
+    }
 
     data.results.forEach((movie) => {
         let rating = movie.vote_average;
@@ -153,6 +160,21 @@ let addItems = (data) => {
     newMovieSection.appendChild(newHeading);
     newMovieSection.appendChild(newMovieScroll);
     mainContainer.appendChild(newMovieSection);
+
+    if(j > 0){
+        newMovieScroll.classList.add("search");
+        let pageSection = document.createElement("div");
+        pageSection.id = "page";
+        pageSection.innerHTML = `<button id="prevPageBtn"><i class="fa fa-angle-left"></i></button>
+        <span id="pageNumber"><span class="currentPage">${data.page}</span> of <span class="totalPages">${data.total_pages}</span></span>
+        <button id="nextPageBtn"><i class="fa fa-angle-right"></i></button>
+        `;
+        mainContainer.appendChild(pageSection);
+        j--;
+    }else{
+        newMovieScroll.classList.remove("search");
+        mainContainer.removeChild(pageSection);
+    }
 };
 
 // ========== Fetch Trending Data =========== //
@@ -200,10 +222,11 @@ let debounce = (func, delay) => {
     fetchTrending();
     fetchPopular();
    }else{
-    let fetchSerchData = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchInput.value}&include_adult=false&language=en-US&page=1`, options);
+    let fetchSerchData = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchInput.value}&include_adult=false&language=en-US&page=${page}`, options);
     let searchData = await fetchSerchData.json();
 
     mainContainer.innerHTML = "";
+    j++;
     addItems(searchData);
    }
  }
