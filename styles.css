@@ -294,6 +294,17 @@ h1{
     color: var(--hoverTextColor);
 }
 
+footer{
+    width: 100%;
+    height: 15rem;
+    background-color: var(--headerColor);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
 
 /* <------------- Scrollbar Styling ----------> */
 
