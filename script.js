@@ -171,11 +171,30 @@ let addItems = (data) => {
         `;
         mainContainer.appendChild(pageSection);
         j--;
+
+        pageSection.addEventListener("click", (e)=>{
+            if(e.target.id === "prevPageBtn"){
+                if(page >= 2){
+                    page--;
+                }
+                handleInput();
+            }else if(e.target.id === "nextPageBtn"){
+                page++;
+                handleInput();
+            }
+        });
+
     }else{
         newMovieScroll.classList.remove("search");
-        mainContainer.removeChild(pageSection);
+        // mainContainer.removeChild(pageSection);
     }
 };
+
+// ========== Add Search Data =========== //
+
+let addSearchItems = ()=>{
+
+}
 
 // ========== Fetch Trending Data =========== //
 
@@ -199,7 +218,6 @@ let fetchPopular = async () => {
     for (let i = 0; i < 3; i++) {
         let fetchPopularData = await fetch(keys[i], options);
         let popularData = await fetchPopularData.json();
-        console.log(popularData);
         addItems(popularData);
     }
 };
@@ -218,15 +236,15 @@ let debounce = (func, delay) => {
 
  let handleInput = async ()=>{
    if(searchInput.value === ""){
+    page = 1;
     mainContainer.innerHTML = "";
     fetchTrending();
     fetchPopular();
    }else{
     let fetchSerchData = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchInput.value}&include_adult=false&language=en-US&page=${page}`, options);
     let searchData = await fetchSerchData.json();
-
-    mainContainer.innerHTML = "";
     j++;
+    mainContainer.innerHTML = "";
     addItems(searchData);
    }
  }
@@ -234,6 +252,7 @@ let debounce = (func, delay) => {
  const debounceInputHandler = debounce(handleInput, 500); 
 
 searchInput.addEventListener("input", () => {
+    page = 1;
     debounceInputHandler();
 });
 
